@@ -22,13 +22,23 @@ namespace TernaryMachine
             string program = File.ReadAllText(dest);
             string[] lines = Regex.Split(program, @";");
             for (int i = 0; i < lines.Length; i++) lines[i] = lines[i].Replace(" ", string.Empty).Replace("\r\n", string.Empty);
-            Regex dataregex = new Regex(@"^(Integer|Float)(\w*|(\w*(\,\w*)*))");
+            Regex dataregex = new Regex(@"^(Integer|Float|Logic|Tryte)(\w*|(\w*(\,\w*)*))");
             foreach (var line in lines)
             {
                 if (dataregex.IsMatch(line))
-                    if(Regex.IsMatch(line, @"^Integer")) Console.WriteLine(line);
+                {
+                    ArrayList vars = new ArrayList();
+                    vars.AddRange(Regex.Split(line, @"^Integer|,|;"));
+                    Console.WriteLine(vars.Count);
+                    foreach (var v in vars)
+                    {
+                        Console.WriteLine(v);
+                    }
+                }
             }
             Console.ReadLine();
         }
+
+        public void run() { }
     }
 }

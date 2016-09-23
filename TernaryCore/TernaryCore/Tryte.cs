@@ -9,22 +9,22 @@ using Microsoft.SqlServer.Server;
 
 namespace TernaryCore
 {
-    public enum Trit { False = -1, Unknown = 0, True = 1 }
+    internal enum Trit { False = -1, Unknown = 0, True = 1 }
     public class Tryte 
     {
-        public const short Size = 9;
+        internal const short Size = 9;
         private Trit[] tryteBase = new Trit[Size] {0, 0, 0, 0, 0, 0, 0, 0, 0}; 
-        public Trit[] TryteBase {get; }
+        internal Trit[] TryteBase {get { return tryteBase; } }
         private Trit carry = Trit.Unknown;
-        public Trit[] transfer = new Trit[Size]{0, 0, 0, 0, 0, 0, 0, 0, 0};
+        internal Trit[] transfer = new Trit[Size]{0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-        public Trit Carry
+        internal Trit Carry
         {
             get { return carry; }
             set { carry = value; }
         }
 
-        public Trit this[int index]
+        internal Trit this[int index]
         {
             get { return tryteBase[index]; }
             set { tryteBase[index] = value; }
@@ -105,7 +105,7 @@ namespace TernaryCore
         #endregion
 
         #region Операции
-        private static Trit TritSum(Trit left, Trit right, ref Trit carry)
+        internal static Trit TritSum(Trit left, Trit right, ref Trit carry)
         {
             Trit res = Trit.Unknown;
             if (carry == Trit.Unknown)
@@ -126,10 +126,8 @@ namespace TernaryCore
             }
             else
             {
-                if (left == right && carry == left)
-                {
-                    res = Trit.Unknown;
-                }
+                if (left == right && carry == left)                
+                    res = Trit.Unknown;                
                 else if (left != Trit.Unknown && left == right && carry != left)
                 {
                     res = left;
@@ -140,16 +138,18 @@ namespace TernaryCore
                     res = carry;
                     carry = Trit.Unknown;
                 }
-                else if ((left == Trit.Unknown && carry == right) || (right == Trit.Unknown && carry == left))
-                {
-                    res = (Trit) (-(int) (carry));
+                else if ((left == Trit.Unknown && carry == right) || (right == Trit.Unknown && carry == left))                
+                    res = (Trit) (-(int) (carry));                
+                else 
+                { 
+                    res = (Trit) ((int) left + (int) right) + (int) carry; 
+                    carry = Trit.Unknown; 
                 }
-                else { res = (Trit) ((int) left + (int) right) + (int) carry; carry = Trit.Unknown; }
             }
             return res;
         }
 
-        public static Trit TritMul(Trit left, Trit right)
+        internal static Trit TritMul(Trit left, Trit right)
         {
             return (Trit) ((int)left * (int)right);
         }
@@ -157,17 +157,15 @@ namespace TernaryCore
         public static Tryte operator +(Tryte left, Tryte right)
         {
             Tryte result = new Tryte();
-            for (int i = Size - 1; i >= 0; i--)
-            {
-                result[i] = TritSum(left[i], right[i], ref result.carry);
-            }
+            for (int i = Size - 1; i >= 0; i--)            
+                result[i] = TritSum(left[i], right[i], ref result.carry);            
             return result;
         }
 
         public static Tryte operator -(Tryte left, Tryte right)
         {
-            Tryte res = new Tryte(left);
-            res = -res + right;
+            Tryte res = new Tryte(right);
+            res = left + -res;
             return res;
         }
 
@@ -188,7 +186,7 @@ namespace TernaryCore
         {
             if(n > 8 || n < 0)
                 return new Tryte();
-            else if (n == 0) return new Tryte(left);            
+            if (n == 0) return new Tryte(left);            
             Tryte result = new Tryte();
 
             for (int i = 0; i < Size - n; i++)
@@ -210,7 +208,7 @@ namespace TernaryCore
         {
             if (n > 8 || n < 0)
                 return new Tryte();
-            else if (n == 0) return left;
+            if (n == 0) return left;
             Tryte result = new Tryte();
             for (int i = n; i < Size; i++)            
                 result[i] = left[i - n];
@@ -229,13 +227,13 @@ namespace TernaryCore
         #region Вспомогательные функции
 
 
-        public int FirstIndex()
+        internal int FirstIndex()
         {
             int index = 0;
             for (; index <= Size - 1; index++)
                 if (tryteBase[index] != Trit.Unknown)
                     return index;
-            return index = 8;
+            return 8;
 
         }
         
@@ -281,7 +279,7 @@ namespace TernaryCore
 
 
 
-        public void DebugWrite()
+        internal void DebugWrite()
         {
             for (int i = 0; i < Size; i++)
             {

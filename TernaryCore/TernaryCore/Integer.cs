@@ -12,7 +12,7 @@ namespace TernaryCore
 {
     public class Integer
     {
-        private const int Size = 3;
+        internal const int Size = 3;
         private Tryte[] ibase = {new Tryte(), new Tryte(), new Tryte()};
 
         public Integer(){ }
@@ -322,7 +322,7 @@ namespace TernaryCore
 
         #region Вспомогательные фукнции
 
-        public void DebugWrite()
+        internal void DebugWrite()
         {
             foreach (var tryte1 in ibase)
             {
@@ -339,7 +339,7 @@ namespace TernaryCore
                 trytes[i] = ibase[i];
         }
 
-        private int[] FindIndex()
+        internal int[] FindIndex()
         {
             for(int i = 0; i < Size; i++)
                 for (int j = 0; j < Tryte.Size; j++)

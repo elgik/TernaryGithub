@@ -11,7 +11,7 @@ namespace TernaryMachine
         static void Main(string[] args)
         {
             Machine m = new Machine();
-            m.Parse(@"C:\Users\Egorov\Documents\Program.txt");
+            m.Parse(@"C:\Users\popovdp\Desktop\text.txt");
         }
     }
 }
